@@ -40,7 +40,7 @@ button{cursor:pointer}
 }
 .btn:hover{background:var(--green2);transform:translateY(-1px)}
 .login-links{display:flex;justify-content:space-between;margin-top:16px;font-size:13px;color:var(--green)}
-.demo-note{font-size:11px;color:#777;text-align:center;margin-top:20px}
+.CR-note{font-size:11px;color:#777;text-align:center;margin-top:20px}
 
 /* APP HEADER */
 #application{display:none;min-height:100vh}
@@ -240,6 +240,15 @@ select.input{background:#fff}
 .modal-box{background:#fff;width:100%;max-width:430px;border-radius:16px;padding:22px}
 .modal-close{float:right;border:0;background:transparent;font-size:22px}
 
+/* ICONES SVG */
+.icon-btn svg,.ico svg,.navico svg,.copy svg{vertical-align:middle}
+.icon-btn svg{width:22px;height:22px;fill:#fff}
+.ico svg{width:24px;height:24px;fill:var(--green)}
+.navico svg{width:20px;height:20px;fill:currentColor}
+.copy svg{width:13px;height:13px;fill:var(--green)}
+.lock-icon{width:56px;height:56px;fill:var(--red);margin:10px 0}
+.datetime{font-size:12px;text-align:right;line-height:1.4;color:#fff;opacity:.95}
+
 /* BOTTOM NAV */
 .bottom-nav{
  position:fixed;z-index:50;bottom:0;left:0;right:0;background:#fff;display:flex;
@@ -270,6 +279,39 @@ select.input{background:#fff}
 @media(min-width:900px){
  .container{max-width:850px}
 }
+
+/* AJUSTEMENT CARTE : conservation des proportions sur PC et mobile */
+.bank-card > *{
+  --card-scale:clamp(.70, calc(100vw / 600), 1);
+}
+@media(max-width:600px){
+  .bank-card .chip{
+    transform:scale(.78);
+    transform-origin:left top;
+  }
+  .bank-card .card-type{font-size:24px;top:22px;right:22px}
+  .bank-card .card-number{
+    font-size:17px;
+    letter-spacing:3px;
+    margin-left:20px;
+    margin-top:22px;
+  }
+  .bank-card .card-details{
+    gap:25px;
+    margin:18px 20px 0;
+  }
+  .bank-card .card-bottom{
+    left:20px;
+    right:20px;
+    bottom:18px;
+    font-size:11px;
+  }
+  .bank-card .card-eye-toggle{
+    bottom:14px;
+    right:14px;
+  }
+}
+
 </style>
 </head>
 
@@ -279,7 +321,7 @@ select.input{background:#fff}
 <div class="login-page" id="login">
  <div class="login-box">
   <div class="login-logo"><img src="BNP.png" alt="BNP Logo" style="height:50px"></div>
-  <p class="login-sub">Espace client </p>
+  <p class="login-sub"></p>
 
   <label class="label">Identifiant client</label>
   <input class="input" id="loginId" placeholder="Ex. 12345678">
@@ -294,7 +336,7 @@ select.input{background:#fff}
    <span onclick="toast('Aide à la connexion')">Besoin d'aide ?</span>
   </div>
 
-  <p class="demo-note"></p>
+  <p class="CR-note"></p>
  </div>
 </div>
 
@@ -304,8 +346,9 @@ select.input{background:#fff}
  <header class="header">
   <div class="logo"><img src="BNP.png" alt="BNP Logo" style="height:50px"></div>
   <div class="header-actions">
-   <button class="icon-btn" onclick="openNotifications()">🔔</button>
-   <button class="icon-btn" onclick="page('settings')">⚙️</button>
+   <div class="datetime" id="datetime"></div>
+   <button class="icon-btn" onclick="openNotifications()"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5S10.5 3.17 10.5 4v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+   <button class="icon-btn" onclick="page('settings')"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
   </div>
  </header>
 
@@ -336,24 +379,25 @@ select.input{background:#fff}
       <h3>Compte courant</h3>
       <span class="account-number">N° **** **** 2020</span>
      </div>
-     <span class="badge green">ACTIF</span>
+    <span class="badge green">ACTIF</span>
     </div>
-    <div class="balance">80 000,00 €</div>
+    <div class="balance">80 000 ,00 €</div>
     <div class="muted">Solde disponible</div>
+    <div class="muted" style="margin-top:8px"></div>
    </div>
 
    <div class="actions">
-    <div class="action" onclick="page('transfer')"><span class="ico">↔️</span>Virement</div>
-    <div class="action" onclick="page('cards')"><span class="ico">💳</span>Cartes</div>
-    <div class="action" onclick="page('documents')"><span class="ico">📄</span>Documents</div>
-    <div class="action" onclick="page('contact')"><span class="ico">💬</span>Contact</div>
+    <div class="action" onclick="page('transfer')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></span>Virement</div>
+    <div class="action" onclick="page('cards')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>Cartes</div>
+    <div class="action" onclick="page('documents')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></span>Documents</div>
+    <div class="action" onclick="page('contact')"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg></span>Contact</div>
    </div>
 
    <div class="card">
     <div class="row"><h2>Ma carte</h2><span class="badge green">ACTIVE</span></div>
     <div class="bank-card card-hidden" id="mainCard">
      <div class="card-type">VISA</div>
-     <div class="chip"></div>
+     
      <div class="card-number card-number-visible">4532 1234 5678 6738</div>
      <div class="card-number card-number-hidden">4532 •••• •••• 6738</div>
      <div class="card-details">
@@ -376,7 +420,7 @@ select.input{background:#fff}
     </div>
     <div class="row"><h2>Mes comptes</h2><button class="copy" onclick="page('accounts')">Voir tout</button></div>
     <div class="account-item">
-     <div class="row"><span class="account-type">Compte courant</span><span class="amount">80 000 €</span></div>
+     <div class="row"><span class="account-type">Compte courant</span><span class="amount">80 000  €</span></div>
      <div class="muted">**** 2020</div>
     </div>
     <div class="account-item">
@@ -384,8 +428,8 @@ select.input{background:#fff}
      <div class="muted">Projet immobilier</div>
     </div>
     <div class="account-item">
-     <div class="row"><span class="account-type">Compte sécurisé</span><span class="amount negative">80 000 €</span></div>
-     <div class="muted">Statut actif — simulation uniquement</div>
+     <div class="row"><span class="account-type">Compte sécurisé</span><span class="amount negative">80 000  €</span></div>
+     <div class="muted"></div>
     </div>
    </div>
 
@@ -394,7 +438,7 @@ select.input{background:#fff}
     <div class="table-wrap">
      <table>
       <thead><tr><th>Opération</th><th>Date</th><th>Montant</th></tr></thead>
-      <tbody>
+      <tbody id="homeOperations">
        <tr><td>Salaire</td><td>08/09/2026</td><td class="amount">+78 555 €</td></tr>
        <tr><td>Paiement carte</td><td>07/09/2026</td><td class="amount negative">-80 €</td></tr>
        <tr><td>Retrait distributeur</td><td>06/09/2026</td><td class="amount negative">-50 €</td></tr>
@@ -422,7 +466,7 @@ select.input{background:#fff}
    <div class="card">
     <h2>Mes comptes</h2>
     <div class="account-item">
-     <div class="row"><b>Compte courant</b><b class="amount">80 000 €</b></div>
+     <div class="row"><b>Compte courant</b><b class="amount">80 000  €</b></div>
      <p class="muted">Compte **** 2020 · Disponible</p>
     </div>
     <div class="account-item">
@@ -432,7 +476,7 @@ select.input{background:#fff}
      <small class="muted">70 % de l'objectif</small>
     </div>
     <div class="account-item">
-     <div class="row"><b>Compte sécurisé</b><b class="amount negative">80 000 €</b></div>
+     <div class="row"><b>Compte sécurisé</b><b class="amount negative">80 000  €</b></div>
      <p class="muted">Compte  · statut actif</p>
      <span class="badge green">ACTIF</span>
     </div>
@@ -440,8 +484,8 @@ select.input{background:#fff}
    <div class="card">
     <h2>Détails du compte courant</h2>
     <div class="grid2">
-     <div class="stat"><span class="muted">Solde</span><br><strong>80 000 €</strong></div>
-     <div class="stat"><span class="muted">Disponible</span><br><strong>80 000 €</strong></div>
+     <div class="stat"><span class="muted">Solde</span><br><strong>80 000  €</strong></div>
+     <div class="stat"><span class="muted">Disponible</span><br><strong>80 000  €</strong></div>
      <div class="stat"><span class="muted">Découvert autorisé</span><br><strong>500 €</strong></div>
      <div class="stat"><span class="muted">Dernier relevé</span><br><strong>08/09</strong></div>
     </div>
@@ -456,13 +500,17 @@ select.input{background:#fff}
     <div class="table-wrap">
      <table>
       <thead><tr><th>Libellé</th><th>Date</th><th>Montant</th></tr></thead>
-      <tbody>
-       <tr><td>Salaire</td><td>08/09/2026</td><td class="amount">+78 555 €</td></tr>
-       <tr><td>Paiement carte</td><td>07/09/2026</td><td class="amount negative">-80 €</td></tr>
-       <tr><td>Retrait DAB</td><td>06/09/2026</td><td class="amount negative">-50 €</td></tr>
-       <tr><td>Virement reçu</td><td>05/09/2026</td><td class="amount">+600 €</td></tr>
-       <tr><td>Abonnement</td><td>03/09/2026</td><td class="amount negative">-25 €</td></tr>
-       <tr><td>Virement reçu</td><td>01/09/2026</td><td class="amount">+1 000 €</td></tr>
+      <tbody id="operationsHistory">
+       <tr><td>Salaire</td><td>10/11/2002</td><td class="amount">+2 450 €</td></tr>
+       <tr><td>Virement reçu</td><td>10/11/2002</td><td class="amount">+800 €</td></tr>
+       <tr><td>Paiement carte</td><td>05/11/2002</td><td class="amount negative">-120 €</td></tr>
+       <tr><td>Retrait DAB</td><td>22/08/2001</td><td class="amount negative">-60 €</td></tr>
+       <tr><td>Virement reçu</td><td>22/08/2001</td><td class="amount">+350 €</td></tr>
+       <tr><td>Abonnement</td><td>06/04/1998</td><td class="amount negative">-25 €</td></tr>
+       <tr><td>Paiement carte</td><td>03/04/1998</td><td class="amount negative">-90 €</td></tr>
+       <tr><td>Virement reçu</td><td>01/03/1998</td><td class="amount">+500 €</td></tr>
+       <tr><td>Salaire</td><td>10/11/1996</td><td class="amount">+1 200 €</td></tr>
+       <tr><td>Virement reçu</td><td>10/10/1960</td><td class="amount">+75 €</td></tr>
       </tbody>
      </table>
     </div>
@@ -473,11 +521,9 @@ select.input{background:#fff}
   <section id="transfer" class="page">
    <div class="card">
     <h2>Effectuer un virement</h2>
-    <p class="muted">Simulation sans transfert d'argent réel.</p>
-    <div class="form-group"><label>Votre email</label><input class="input" id="senderEmail" placeholder="Votre email"></div>
+    <p class="muted"></p>
     <div class="form-group"><label>Votre nom et prénom</label><input class="input" id="beneficiaryFirstName" placeholder="Prénom du bénéficiaire"></div>
     <div class="form-group"><label>Bénéficiaire</label><input class="input" id="beneficiary" placeholder="Nom du bénéficiaire"></div>
-    <div class="form-group"><label>Email bénéficiaire</label><input class="input" id="beneficiaryEmail" placeholder="Email du bénéficiaire"></div>
     <div class="form-group"><label>IBAN</label><input class="input" id="iban" placeholder="BE40 XXXX XXXX XXXX"></div>
     <div class="form-group"><label>Montant</label><input class="input" id="transferAmount" type="number" placeholder="0"></div>
     <div class="form-group"><label>Motif</label><input class="input" id="transferMotive" placeholder="Motif du virement"></div>
@@ -496,7 +542,7 @@ select.input{background:#fff}
     <div class="row"><h2>Ma carte principale</h2><span class="badge green">ACTIVE</span></div>
     <div class="bank-card card-hidden" id="cardDetails">
      <div class="card-type">VISA</div>
-     <div class="chip"></div>
+     
      <div class="card-number card-number-visible">4532 1234 5678 6738</div>
      <div class="card-number card-number-hidden">4532 •••• •••• 6738</div>
      <div class="card-details">
@@ -518,10 +564,10 @@ select.input{background:#fff}
      </div>
     </div>
     <div class="grid2">
-     <button class="copy" onclick="toast('Gestion de la carte')">🔐 Sécurité</button>
-     <button class="copy" onclick="toast('Plafond  : 78 555 €')">📊 Plafonds</button>
-     <button class="copy" onclick="toast('Paiements en ligne activés')">🌐 Paiement en ligne</button>
-     <button class="copy" onclick="toast('Paiement mobile activé')">📱 Paiement mobile</button>
+     <button class="copy" onclick="toast('Gestion de la carte')"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg> Sécurité</button>
+     <button class="copy" onclick="toast('Plafond  : 78 555 €')"><svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg> Plafonds</button>
+     <button class="copy" onclick="toast('Paiements en ligne activés')"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.35.16-2h4.68c.09.65.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg> Paiement en ligne</button>
+     <button class="copy" onclick="toast('Paiement mobile activé')"><svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg> Paiement mobile</button>
     </div>
    </div>
    <div class="card">
@@ -547,10 +593,10 @@ select.input{background:#fff}
     </div>
    </div>
    <div class="card">
-    <h2>Simuler un crédit</h2>
+    <h2></h2>
     <div class="form-group"><label>Montant souhaité</label><input class="input" id="loanAmount" type="number" placeholder="10000"></div>
     <div class="form-group"><label>Durée</label><select class="input" id="loanDuration"><option>12 mois</option><option>24 mois</option><option>36 mois</option><option>48 mois</option></select></div>
-    <button class="btn" onclick="simulateLoan()">Simuler</button>
+    <button class="btn" onclick="simulateLoan()"></button>
     <div id="loanResult" style="margin-top:12px"></div>
    </div>
   </section>
@@ -577,19 +623,19 @@ select.input{background:#fff}
   <!-- ASSURANCE -->
   <section id="secure" class="page">
    <div class="card"><h2>Assurances</h2><p class="muted">Contrats de démonstration.</p></div>
-   <div class="card"><div class="row"><b>🏠 Assurance habitation</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-001 · Échéance 12/2026</p></div>
-   <div class="card"><div class="row"><b>🚗 Assurance automobile</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-002 · Échéance 03/2027</p></div>
-   <div class="card"><div class="row"><b>🛡 Protection famille</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° DEMO-003</p></div>
+   <div class="card"><div class="row"><b>Assurance habitation</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° CR-001 · Échéance 12/2026</p></div>
+   <div class="card"><div class="row"><b>🚗 Assurance automobile</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° CR-002 · Échéance 03/2027</p></div>
+   <div class="card"><div class="row"><b>🛡 Protection famille</b><span class="badge green">ACTIVE</span></div><p class="muted" style="margin-top:8px">Contrat n° CR-003</p></div>
   </section>
 
   <!-- DOCUMENTS -->
   <section id="documents" class="page">
    <div class="card">
     <h2>Documents</h2>
-    <div class="account-item"><div class="row"><b>📄 Relevé bancaire — Septembre</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
-    <div class="account-item"><div class="row"><b>📄 Relevé bancaire — Août</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
-    <div class="account-item"><div class="row"><b>📄 RIB</b><button class="copy" onclick="copyRIB()">Copier</button></div></div>
-    <div class="account-item"><div class="row"><b>📄 Contrat carte</b><button class="copy" onclick="toast('Document ')">Ouvrir</button></div></div>
+    <div class="account-item"><div class="row"><b>Relevé bancaire — Septembre</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
+    <div class="account-item"><div class="row"><b>Relevé bancaire — Août</b><button class="copy" onclick="toast('Aperçu du document ')">Ouvrir</button></div></div>
+    <div class="account-item"><div class="row"><b>RIB</b><button class="copy" onclick="copyRIB()">Copier</button></div></div>
+    <div class="account-item"><div class="row"><b>Contrat carte</b><button class="copy" onclick="toast('Document ')">Ouvrir</button></div></div>
    </div>
   </section>
 
@@ -597,8 +643,8 @@ select.input{background:#fff}
   <section id="contact" class="page">
    <div class="card">
     <h2>Contact & assistance</h2>
-    <div class="account-item"><b>💬 Messagerie</b><p class="muted">Écrire à un conseiller </p></div>
-    <div class="account-item"><b>☎️ Service client</b><p class="muted">+34 00 00 00 00 00 — démonstration</p></div>
+    <div class="account-item"><b>Messagerie</b><p class="muted">Écrire à un conseiller </p></div>
+    <div class="account-item"><b>☎️ Service client</b><p class="muted"></p></div>
     <div class="account-item"><b>📍 Agences</b><p class="muted">Rechercher une agence </p></div>
    </div>
   </section>
@@ -618,8 +664,8 @@ select.input{background:#fff}
     <h2>Paramètres</h2>
     <div class="account-item"><b>👤 Informations personnelles</b><p class="muted">FRANÇOIS GARCIA JOSE GONZÁLEZ
 </p></div>
-    <div class="account-item"><b>🔐 Sécurité</b><p class="muted">Modifier le code secret </p></div>
-    <div class="account-item"><b>🔔 Notifications</b><p class="muted">Gérer les préférences</p></div>
+    <div class="account-item"><b>Sécurité</b><p class="muted">Modifier le code secret </p></div>
+    <div class="account-item"><b>Notifications</b><p class="muted">Gérer les préférences</p></div>
     <div class="account-item"><b>🌙 Apparence</b><p class="muted">Mode clair</p></div>
     <button class="btn" onclick="logout()">Se déconnecter</button>
    </div>
@@ -629,10 +675,10 @@ select.input{background:#fff}
 
  <!-- NAVIGATION BAS -->
  <nav class="bottom-nav">
-  <button data-page="home" onclick="page('home')"><span class="navico">🏠</span>Accueil</button>
-  <button data-page="transfer" onclick="page('transfer')"><span class="navico">↔️</span>Virements</button>
-  <button data-page="cards" onclick="page('cards')"><span class="navico">💳</span>Cartes</button>
-  <button data-page="contact" onclick="page('contact')"><span class="navico">💬</span>Contact</button>
+  <button data-page="home" onclick="page('home')"><span class="navico"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>Accueil</button>
+  <button data-page="transfer" onclick="page('transfer')"><span class="navico"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></span>Virements</button>
+  <button data-page="cards" onclick="page('cards')"><span class="navico"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>Cartes</button>
+  <button data-page="contact" onclick="page('contact')"><span class="navico"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg></span>Contact</button>
   <button data-page="settings" onclick="page('settings')"><span class="navico">☰</span>Plus</button>
  </nav>
 </div>
@@ -642,17 +688,9 @@ select.input{background:#fff}
  <div class="modal-box">
   <button class="modal-close" onclick="closeModal()">×</button>
   <h2>Notifications</h2>
-  <p style="margin-top:12px">🔔 Votre compte  a été mis à jour.</p>
-  <p style="margin-top:12px">💳 Votre carte  fonctionne correctement.</p>
+  <p style="margin-top:12px">Votre compte  a été mis à jour.</p>
+  <p style="margin-top:12px">Votre carte  fonctionne correctement.</p>
   <button class="btn" onclick="closeModal()">Fermer</button>
- </div>
-</div>
-
-<!-- MODAL TRANSFER RECEIPT -->
-<div class="modal" id="transferReceiptModal" onclick="if(event.target===this)closeTransferModal()">
- <div class="modal-box" style="max-width:650px">
-  <button class="modal-close" onclick="closeTransferModal()">×</button>
-  <div id="transferReceiptContent"></div>
  </div>
 </div>
 
@@ -661,16 +699,40 @@ const pages=document.querySelectorAll('.page');
 const navButtons=document.querySelectorAll('[data-page]');
 
 function connexion(){
+ const id=document.getElementById('loginId').value.trim();
+ const code=document.getElementById('loginCode').value.trim();
+ if(!id||!code){
+  toast('Veuillez saisir votre identifiant et votre code secret.');
+  return;
+ }
+ if(code.length<6){
+  toast('Le code secret doit contenir 6 chiffres.');
+  return;
+ }
  const loader=document.createElement('div');
  loader.className='loader';
  loader.innerHTML='<div class="login-logo"><img src="BNP.png" alt="BNP Logo" style="height:40px"></div><div class="loader-circle"></div><span>Connexion en cours...</span>';
  document.body.appendChild(loader);
+
  setTimeout(()=>{
   document.getElementById('login').style.display='none';
   document.getElementById('application').style.display='block';
   loader.remove();
   page('home');
+  startDateTime();
  },900);
+}
+
+let dateTimeInterval=null;
+function startDateTime(){
+ const el=document.getElementById('datetime');
+ const update=()=>{
+  const now=new Date();
+  el.innerHTML=now.toLocaleDateString('fr-FR')+'<br>'+now.toLocaleTimeString('fr-FR');
+ };
+ update();
+ if(dateTimeInterval) clearInterval(dateTimeInterval);
+ dateTimeInterval=setInterval(update,1000);
 }
 
 function page(id){
@@ -711,61 +773,38 @@ function toggleCardVisibility(cardId){
  card.classList.toggle('card-hidden');
 }
 
-function closeTransferModal(){
- document.getElementById('transferReceiptModal').classList.remove('show');
-}
-
 function prepareTransfer(){
- const senderEmail=document.getElementById('senderEmail').value.trim();
  const beneficiaryFirstName=document.getElementById('beneficiaryFirstName').value.trim();
  const beneficiary=document.getElementById('beneficiary').value.trim();
- const beneficiaryEmail=document.getElementById('beneficiaryEmail').value.trim();
  const iban=document.getElementById('iban').value.trim();
- const amount=document.getElementById('transferAmount').value;
+ const amount=Number(document.getElementById('transferAmount').value);
  const motive=document.getElementById('transferMotive').value.trim();
  
- if(!senderEmail||!beneficiaryFirstName||!beneficiary||!beneficiaryEmail||!iban||!amount||!motive){
+ if(!beneficiaryFirstName||!beneficiary||!iban||!motive){
   toast('Veuillez remplir tous les champs.');
   return;
  }
- 
- // Créer FormData pour l'envoi AJAX
- const formData=new FormData();
- formData.append('senderEmail',senderEmail);
- formData.append('beneficiaryFirstName',beneficiaryFirstName);
- formData.append('beneficiary',beneficiary);
- formData.append('beneficiaryEmail',beneficiaryEmail);
- formData.append('iban',iban);
- formData.append('amount',amount);
- formData.append('motive',motive);
- 
- // Envoyer la requête au serveur PHP
- fetch('send-transfer.php',{
-  method:'POST',
-  body:formData
- })
- .then(response=>response.json())
- .then(data=>{
-  if(data.success){
-   // Vider les champs
-   document.getElementById('senderEmail').value='';
-   document.getElementById('beneficiaryFirstName').value='';
-   document.getElementById('beneficiary').value='';
-   document.getElementById('beneficiaryEmail').value='';
-   document.getElementById('iban').value='';
-   document.getElementById('transferAmount').value='';
-   document.getElementById('transferMotive').value='';
-   
-   // Afficher confirmation
-   toast('✓ Virement effectué avec succès');
-  }else{
-   toast('Erreur : '+data.message);
-  }
- })
- .catch(error=>{
-  console.error('Erreur:',error);
-  toast('Erreur de connexion au serveur');
+ if(!Number.isFinite(amount)||amount<=0){
+  toast('Saisissez un montant de démonstration supérieur à zéro.');
+  return;
+ }
+
+ const now=new Date();
+ const date=now.toLocaleDateString('fr-FR');
+ const formattedAmount=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(amount);
+ const operationLabel='Virement simulé vers '+beneficiary;
+ [document.getElementById('homeOperations'),document.getElementById('operationsHistory')].forEach(tbody=>{
+  const row=document.createElement('tr');
+  [operationLabel,date,'−'+formattedAmount].forEach((value,index)=>{
+   const cell=document.createElement('td');
+   cell.textContent=value;
+   if(index===2) cell.className='amount negative';
+   row.appendChild(cell);
+  });
+  tbody.prepend(row);
  });
+
+ toast('Virement éffectuées avec succès');
 }
 
 function simulateLoan(){

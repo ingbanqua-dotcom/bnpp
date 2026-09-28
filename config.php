@@ -14,23 +14,7 @@ define('DEBUG', false); // false en production
 // 2. CHEMIN RACINE
 // ============================================
 define('BASE_PATH', __DIR__);
-define('EMAILS_PATH', BASE_PATH . '/emails_sent');
 define('LOGS_PATH', BASE_PATH . '/logs');
-
-// ============================================
-// 3. CONFIGURATION EMAIL
-// ============================================
-// SMTP Configuration (pour production)
-define('SMTP_HOST', 'smtp.gmail.com'); // ou votre serveur SMTP
-define('SMTP_PORT', 587);
-define('SMTP_USER', 'bnpparibasloc@gmail.com'); // Votre email
-define('SMTP_PASSWORD', 'noyo lgqg risb sscd'); // Votre mot de passe
-define('SMTP_SECURE', 'tls'); // 'tls' ou 'ssl'
-
-// Email d'expédition
-define('EMAIL_FROM', 'noreply@bnpparibas-fortis.local');
-define('EMAIL_FROM_NAME', 'BNP Paribas Fortis');
-define('EMAIL_REPLY_TO', 'support@bnpparibas-fortis.local');
 
 // ============================================
 // 4. INFORMATIONS BANQUE
@@ -43,10 +27,10 @@ define('IBAN_PREFIX', 'BE');
 // ============================================
 // 5. DONNÉES FICTIVES (Profil utilisateur)
 // ============================================
-define('USER_FULLNAME', 'FRANÇOIS GARCIA JOSE GONZÁLEZ');
+define('USER_FULLNAME', 'Franck Eric');
 define('USER_FIRST_NAME', 'FRANÇOIS');
 define('USER_LAST_NAME', 'GARCIA');
-define('USER_EMAIL_DEMO', 'francisco.garcia@example.com');
+define('USER_EMAIL_CR', 'francisco.garcia@example.com');
 define('USER_ID', 'CL-2026-12345');
 
 // Soldes de compte (fictifs)
@@ -85,7 +69,7 @@ define('SUCCESS_COLOR', '#087b39');
  * Crée les dossiers nécessaires s'ils n'existent pas
  */
 function createRequiredDirectories() {
-    $dirs = [EMAILS_PATH, LOGS_PATH];
+    $dirs = [LOGS_PATH];
     foreach ($dirs as $dir) {
         if (!is_dir($dir)) {
             @mkdir($dir, 0755, true);
