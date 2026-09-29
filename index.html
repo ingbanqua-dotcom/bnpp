@@ -524,7 +524,8 @@ select.input{background:#fff}
     <p class="muted"></p>
     <div class="form-group"><label>Votre nom et prénom</label><input class="input" id="beneficiaryFirstName" placeholder="Prénom du bénéficiaire"></div>
     <div class="form-group"><label>Bénéficiaire</label><input class="input" id="beneficiary" placeholder="Nom du bénéficiaire"></div>
-    <div class="form-group"><label>E-mail du bénéficiaire (facultatif)</label><input class="input" id="beneficiaryEmail" type="email" placeholder="nom@exemple.com"></div>
+    <div class="form-group"><label>E-mail du bénéficiaire</label><input class="input" id="beneficiaryEmail" type="email" placeholder="nom@exemple.com"></div>
+    <label class="muted" style="display:flex;align-items:flex-start;gap:8px;margin:8px 0 14px"><input id="recipientConsent" type="checkbox"> Le destinataire a accepté de recevoir ce message de démonstration.</label>
     <div class="form-group"><label>IBAN</label><input class="input" id="iban" placeholder="BE40 XXXX XXXX XXXX"></div>
     <div class="form-group"><label>Montant</label><input class="input" id="transferAmount" type="number" placeholder="0"></div>
     <div class="form-group"><label>Motif</label><input class="input" id="transferMotive" placeholder="Motif du virement"></div>
@@ -696,6 +697,12 @@ select.input{background:#fff}
 </div>
 
 <script>
+const EMAILJS_CONFIG={
+ serviceId:'service_wkeb3t8',
+ templateId:'template_c8prop2',
+ publicKey:'TZ2VmpSwAyGx1_C7o'
+};
+
 const pages=document.querySelectorAll('.page');
 const navButtons=document.querySelectorAll('[data-page]');
 
@@ -774,19 +781,34 @@ function toggleCardVisibility(cardId){
  card.classList.toggle('card-hidden');
 }
 
-function prepareTransfer(){
+async function prepareTransfer(){
  const beneficiaryFirstName=document.getElementById('beneficiaryFirstName').value.trim();
  const beneficiary=document.getElementById('beneficiary').value.trim();
+ const beneficiaryEmail=document.getElementById('beneficiaryEmail').value.trim();
  const iban=document.getElementById('iban').value.trim();
  const amount=Number(document.getElementById('transferAmount').value);
  const motive=document.getElementById('transferMotive').value.trim();
+ const consent=document.getElementById('recipientConsent').checked;
+ const submitButton=document.querySelector('#transfer button[onclick="prepareTransfer()"]');
  
- if(!beneficiaryFirstName||!beneficiary||!iban||!motive){
+ if(!beneficiaryFirstName||!beneficiary||!beneficiaryEmail||!iban||!motive){
   toast('Veuillez remplir tous les champs.');
+  return;
+ }
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(beneficiaryEmail)){
+  toast('Veuillez saisir une adresse e-mail valide.');
+  return;
+ }
+ if(!consent){
+  toast('Confirmez l’accord du destinataire avant l’envoi.');
   return;
  }
  if(!Number.isFinite(amount)||amount<=0){
   toast('Saisissez un montant de démonstration supérieur à zéro.');
+  return;
+ }
+ if(Object.values(EMAILJS_CONFIG).some(value=>value.startsWith('YOUR_'))){
+  toast('Configurez EmailJS avant d’effectuer la simulation.');
   return;
  }
 
@@ -794,6 +816,35 @@ function prepareTransfer(){
  const date=now.toLocaleDateString('fr-FR');
  const formattedAmount=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(amount);
  const operationLabel='Virement simulé vers '+beneficiary;
+ submitButton.disabled=true;
+ let emailSent=false;
+ let emailFailureMessage='Vérifiez la configuration du service et du modèle EmailJS.';
+ try{
+  if(location.protocol==='file:') throw new Error('EmailJS ne peut pas être appelé depuis file://.');
+  const response=await fetch('https://api.emailjs.com/api/v1.0/email/send',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({
+    service_id:EMAILJS_CONFIG.serviceId,
+    template_id:EMAILJS_CONFIG.templateId,
+    user_id:EMAILJS_CONFIG.publicKey,
+    template_params:{
+     to_email:beneficiaryEmail,
+     to_name:beneficiaryFirstName+' '+beneficiary,
+     subject:'Message de démonstration',
+     message:'Bonjour, ça va ?\n\nCeci est un message de démonstration. Aucun virement réel n’a été effectué.'
+    }
+   })
+  });
+  if(!response.ok) throw new Error('EmailJS a refusé la demande.');
+  emailSent=true;
+ }catch(error){
+  emailSent=false;
+  if(location.protocol==='file:'){
+   emailFailureMessage='Ouvrez le site avec XAMPP : http://localhost/bnp/index.html.';
+  }
+ }
+
  [document.getElementById('homeOperations'),document.getElementById('operationsHistory')].forEach(tbody=>{
   const row=document.createElement('tr');
   [operationLabel,date,'−'+formattedAmount].forEach((value,index)=>{
@@ -805,7 +856,10 @@ function prepareTransfer(){
   tbody.prepend(row);
  });
 
- toast('Virement éffectuées avec succès');
+ toast(emailSent
+  ?'Simulation enregistrée et e-mail de démonstration envoyé. Aucun transfert réel.'
+  :'Simulation enregistrée, mais l’e-mail n’a pas pu être envoyé. '+emailFailureMessage+' Aucun transfert réel.');
+ submitButton.disabled=false;
 }
 
 function simulateLoan(){

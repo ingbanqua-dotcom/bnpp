@@ -16,7 +16,7 @@
 
 ### Ouverture directe
 
-Le site est entièrement statique : ouvrez simplement `index.html` dans votre navigateur.
+L'ouverture directe de `index.html` permet de consulter l'interface, mais l'envoi EmailJS peut échouer depuis une adresse `file://`. Pour tester les e-mails, démarrez Apache dans XAMPP et utilisez `http://localhost/bnp/index.html`.
 
 ---
 
