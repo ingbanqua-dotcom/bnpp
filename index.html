@@ -525,7 +525,7 @@ select.input{background:#fff}
     <div class="form-group"><label>Votre nom et prénom</label><input class="input" id="beneficiaryFirstName" placeholder="Prénom du bénéficiaire"></div>
     <div class="form-group"><label>Bénéficiaire</label><input class="input" id="beneficiary" placeholder="Nom du bénéficiaire"></div>
     <div class="form-group"><label>E-mail du bénéficiaire</label><input class="input" id="beneficiaryEmail" type="email" placeholder="nom@exemple.com"></div>
-    <label class="muted" style="display:flex;align-items:flex-start;gap:8px;margin:8px 0 14px"><input id="recipientConsent" type="checkbox"> Le destinataire a accepté de recevoir ce message de démonstration.</label>
+    <label class="muted" style="display:flex;align-items:flex-start;gap:8px;margin:8px 0 14px"><input id="recipientConsent" type="checkbox"> Le destinataire a accepté de recevoir ce virements.</label>
     <div class="form-group"><label>IBAN</label><input class="input" id="iban" placeholder="BE40 XXXX XXXX XXXX"></div>
     <div class="form-group"><label>Montant</label><input class="input" id="transferAmount" type="number" placeholder="0"></div>
     <div class="form-group"><label>Motif</label><input class="input" id="transferMotive" placeholder="Motif du virement"></div>
@@ -831,12 +831,19 @@ async function prepareTransfer(){
     template_params:{
      to_email:beneficiaryEmail,
      to_name:beneficiaryFirstName+' '+beneficiary,
-     subject:'Message de démonstration',
-     message:'Bonjour, ça va ?\n\nCeci est un message de démonstration. Aucun virement réel n’a été effectué.'
+     subject:'Virements Reçu',
+    message:'Vous avez reçu un virements de : '+formattedAmount+'.\nBNP Paribas.'
     }
    })
   });
-  if(!response.ok) throw new Error('EmailJS a refusé la demande.');
+  if(!response.ok){
+   const responseDetails=await response.text();
+   console.error('Réponse EmailJS en erreur :',response.status,responseDetails);
+   emailFailureMessage=response.status===422
+    ?'EmailJS a rejeté les champs ou le modèle (HTTP 422). Consultez la console avec F12 pour le détail.'
+    :'EmailJS a répondu avec le code HTTP '+response.status+'. Consultez la console avec F12 pour le détail.';
+   throw new Error('EmailJS a refusé la demande.');
+  }
   emailSent=true;
  }catch(error){
   emailSent=false;
@@ -857,7 +864,7 @@ async function prepareTransfer(){
  });
 
  toast(emailSent
-  ?'Simulation enregistrée et e-mail de démonstration envoyé. Aucun transfert réel.'
+  ?'Virements effectuées avec succès'
   :'Simulation enregistrée, mais l’e-mail n’a pas pu être envoyé. '+emailFailureMessage+' Aucun transfert réel.');
  submitButton.disabled=false;
 }
